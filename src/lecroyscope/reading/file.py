@@ -2,6 +2,7 @@ import mmap
 from os import PathLike
 import struct
 import numpy
+from io import BytesIO
 
 # description from
 # https://github.com/neago/lecroy-reader/blob/49c42a85c449013c1c48d154ae70192f172e32ba/lecroyreader/lecroy.py#L4
@@ -66,13 +67,20 @@ trc_description = (
 
 
 def read(
-    filename: str | PathLike[str], header_only: bool = False
+    filename_or_bytes: str | PathLike[str] | bytes, header_only: bool = False
 ) -> tuple[dict[str, str | int | float], numpy.ndarray | None, numpy.ndarray | None]:
-    with open(filename, "r+b") as f:
-        # https://docs.python.org/3/library/mmap.html
-        mm = mmap.mmap(f.fileno(), 0)
+    with open(filename_or_bytes, "r+b") if not isinstance(
+        filename_or_bytes, bytes
+    ) else BytesIO(filename_or_bytes) as f:
+
+        wavedesc_bytes = b"WAVEDESC"
         # find "WAVEDESC" and skip those bytes
-        f.read(mm.find(b"WAVEDESC"))
+        if isinstance(filename_or_bytes, bytes):
+            f.read(filename_or_bytes.find(wavedesc_bytes))
+        else:
+            # https://docs.python.org/3/library/mmap.html
+            mm = mmap.mmap(f.fileno(), 0)
+            f.read(mm.find(wavedesc_bytes))
 
         header = {
             name: f.read(struct.Struct(fmt).size) for (name, fmt) in trc_description
