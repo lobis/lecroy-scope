@@ -74,3 +74,21 @@ def test_header_getitem():
 
     with pytest.raises(KeyError):
         header["does_not_exist"]
+
+
+def test_header_string():
+    header = lecroyscope.reading.Header(header_reference_dict)
+    assert (
+        str(header)
+        == """Instrument name: LECROYWR64Xi-A
+Trigger time: 2022-10-13T16:29:38
+Vertical coupling: DC 50 Ohm
+Time base: 200 ns / div
+Horizontal interval: 9.999999717180685e-10
+Horizontal offset: -2.2824463729809135e-07
+Fixed vertical gain: 1 V / div
+Vertical gain: 0.00012499500007834285
+Vertical offset: -0.949999988079071
+Wave array count: 400400
+Subarray count: 200"""
+    )

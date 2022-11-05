@@ -78,6 +78,19 @@ class Header:
             )
         return getattr(self, f"_{item}")
 
+    def __str__(self):
+        return f"""Instrument name: {self["instrument_name"]}
+Trigger time: {self["trigger_time"]}
+Vertical coupling: {self["vert_coupling"]}
+Time base: {self["time_base"]}
+Horizontal interval: {self["horiz_interval"]}
+Horizontal offset: {self["horiz_offset"]}
+Fixed vertical gain: {self["fixed_vert_gain"]}
+Vertical gain: {self["vertical_gain"]}
+Vertical offset: {self["vertical_offset"]}
+Wave array count: {self["wave_array_count"]}
+Subarray count: {self["subarray_count"]}"""
+
     @property
     def sequence(self):
         return self["subarray_count"] > 1
