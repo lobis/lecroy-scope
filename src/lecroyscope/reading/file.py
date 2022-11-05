@@ -39,6 +39,7 @@ def read(
             if isinstance(header[name], bytes):
                 header[name] = header[name].decode("ascii").strip("\x00")
 
+        values_type = numpy.int8 if header["comm_type"] == 0 else numpy.int16
         if not header_only:
             if header["user_text"] != 0:
                 # skip user text
@@ -48,13 +49,12 @@ def read(
                 f.read(int(header["trig_time_array"])), dtype=numpy.float64
             )
 
-            values_type = numpy.int8 if header["comm_type"] == 0 else numpy.int16
             values = numpy.frombuffer(
                 f.read(int(header["wave_array_count"])), dtype=values_type
             )
         else:
             trigger_times = numpy.array([], dtype=numpy.float64)
-            values = numpy.array([], dtype=numpy.float64)
+            values = numpy.array([], dtype=values_type)
 
         trigger_times = trigger_times.reshape((2, -1), order="F")
         if (subarray_count := header["subarray_count"]) > 1:

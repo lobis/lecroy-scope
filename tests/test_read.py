@@ -2,6 +2,7 @@ import pytest
 
 from numpy.testing import assert_array_equal
 from pathlib import Path
+import numpy as np
 
 import lecroyscope
 
@@ -26,6 +27,10 @@ def test_read_header():
     assert header == header_header_only
     assert_array_equal(trigger_times, trigger_times_header_only)
     assert_array_equal(values, values_header_only)
+
+    assert trigger_times.shape[0] == 2
+
+    assert values.dtype in (np.int8, np.int16)
 
 
 def test_read_header_from_bytes():
