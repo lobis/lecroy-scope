@@ -78,6 +78,10 @@ class Header:
             )
         return getattr(self, f"_{item}")
 
+    @property
+    def sequence(self):
+        return self["subarray_count"] > 1
+
 
 # add header fields as properties
 for _name in _trc_description_fields:
