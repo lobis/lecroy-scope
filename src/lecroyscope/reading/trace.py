@@ -15,29 +15,31 @@ class Trace:
             filename_or_bytes if not isinstance(filename_or_bytes, bytes) else ""
         )
 
-        header, self._trigger_times, self._values = read(filename_or_bytes, header_only)
+        header, self._trigger_times, self._voltage = read(
+            filename_or_bytes, header_only
+        )
         self._header = Header(header)
 
         # store values in voltage units
-        self._values = self._values * self._header["vertical_gain"]
-        self._values = self._values + self._header["vertical_offset"]
+        self._voltage = self._voltage * self._header["vertical_gain"]
+        self._voltage = self._voltage + self._header["vertical_offset"]
 
         # compute time values
         self._time = (
-            numpy.arange(self._values.shape[-1]) * self._header["horiz_interval"]
+            numpy.arange(self._voltage.shape[-1]) * self._header["horiz_interval"]
             + self._header["horiz_offset"]
         )
 
     def __len__(self):
         if not self._header.sequence:
             return 1
-        return len(self._values)
+        return len(self._voltage)
 
     def __iter__(self):
         if len(self) == 1:
-            yield self._time, self._values
+            yield self._time, self._voltage
         else:
-            for single in self._values:
+            for single in self._voltage:
                 yield self._time, single
 
     @property
@@ -46,11 +48,11 @@ class Trace:
 
     @property
     def header_only(self):
-        return self._values is None
+        return self._voltage.size == 0
 
     @property
-    def values(self):
-        return self._values
+    def voltage(self):
+        return self._voltage
 
     @property
     def trigger_times(self):
@@ -63,8 +65,8 @@ class Trace:
     # Alternative names
     @property
     def x(self):
-        return self.time
+        return self._time
 
     @property
     def y(self):
-        return self.values
+        return self._voltage

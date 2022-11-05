@@ -37,16 +37,19 @@ header = trace.header
 print("Instrument name: ", header.instrument_name)
 
 # or as python dict
+print("Instrument name: ", header["instrument_name"])
+
+# header can also be converted into a python dict
 header_dict = dict(header)
-print("Instrument name: ", header_dict["instrument_name"])
+print("Header keys: ", list(header_dict.keys()))
 ```
 
-The trace data can be accessed via the `time` and `values` attributes:
+The trace data can be accessed via the `time`(`x`) and `voltage`(`y`) attributes:
 
 ```python
 # time values
 time = trace.time  # trace.x is an alias for trace.time
 
 # channel voltage values
-values = trace.values  # trace.y is an alias for trace.values
+voltage = trace.voltage  # trace.y is an alias for trace.voltage
 ```

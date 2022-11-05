@@ -19,7 +19,7 @@ def test_trace_header():
 
 def test_trace_iter():
     filename = files_path / "header.trc"
-    trace = lecroyscope.Trace(filename, header_only=True)
+    trace = lecroyscope.Trace(filename)
 
     # this header file is from a sequence of size 200
     assert len(trace) == 200
@@ -27,8 +27,8 @@ def test_trace_iter():
     data = np.array([(time, single) for time, single in trace])
     assert len(data) == len(trace)
     times = data[:, 0]
-    values = data[:, 1]
-    assert len(times) == len(values) == len(trace)
+    voltage = data[:, 1]
+    assert len(times) == len(voltage) == len(trace)
 
     # check all times are equal
     for time in times:
