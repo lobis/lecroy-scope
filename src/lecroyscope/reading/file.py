@@ -9,7 +9,7 @@ from .header import trc_description
 
 def read(
     filename_or_bytes: str | PathLike[str] | bytes, header_only: bool = False
-) -> tuple[dict[str, str | int | float], numpy.ndarray | None, numpy.ndarray | None]:
+) -> tuple[dict[str, str | int | float], numpy.ndarray, numpy.ndarray]:
     with open(filename_or_bytes, "r+b") if not isinstance(
         filename_or_bytes, bytes
     ) else BytesIO(filename_or_bytes) as f:

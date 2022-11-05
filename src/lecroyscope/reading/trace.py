@@ -13,8 +13,6 @@ class Trace:
         header, self._trigger_times, self._values = read(filename, header_only)
 
         if header_only:
-            assert self._values is None
-            assert self._trigger_times is None
             return
 
         # store values in voltage units
