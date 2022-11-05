@@ -98,20 +98,25 @@ def read(
             if isinstance(header[name], bytes):
                 header[name] = header[name].decode("ascii").strip("\x00")
 
-        if header_only:
-            return header, None, None
+        if not header_only:
+            if header["user_text"] != 0:
+                # skip user text
+                f.read(header["user_text"])
 
-        if header["user_text"] != 0:
-            # skip user text
-            f.read(header["user_text"])
+            trigger_times = numpy.frombuffer(
+                f.read(int(header["trig_time_array"])), dtype=numpy.float64
+            )
 
-        trigger_times = numpy.frombuffer(
-            f.read(int(header["trig_time_array"])), dtype=numpy.float64
-        ).reshape((2, -1), order="F")
+            values_type = numpy.int8 if header["comm_type"] == 0 else numpy.int16
+            values = numpy.frombuffer(
+                f.read(int(header["wave_array_count"])), dtype=values_type
+            )
+        else:
+            trigger_times = numpy.array([], dtype=numpy.float64)
+            values = numpy.array([], dtype=numpy.float64)
 
-        values_type = numpy.int8 if header["comm_type"] == 0 else numpy.int16
-        values = numpy.frombuffer(
-            f.read(int(header["wave_array_count"])), dtype=values_type
-        ).reshape((header["subarray_count"], -1), order="C")
+        trigger_times = trigger_times.reshape((2, -1), order="F")
+        if subarray_count := header["subarray_count"]:
+            values = values.reshape((subarray_count, -1), order="C")
 
         return header, trigger_times, values
