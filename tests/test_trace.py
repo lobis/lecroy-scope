@@ -1,4 +1,6 @@
 import pytest
+
+from numpy.testing import assert_array_equal
 import numpy as np
 from pathlib import Path
 
@@ -27,3 +29,7 @@ def test_trace_iter():
     times = data[:, 0]
     values = data[:, 1]
     assert len(times) == len(values) == len(trace)
+
+    # check all times are equal
+    for time in times:
+        assert_array_equal(time, times[0])

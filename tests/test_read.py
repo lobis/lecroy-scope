@@ -1,5 +1,6 @@
-from numpy.testing import assert_array_equal
 import pytest
+
+from numpy.testing import assert_array_equal
 from pathlib import Path
 
 import lecroyscope
