@@ -3,6 +3,7 @@ from os import PathLike
 import struct
 import numpy
 from io import BytesIO
+from datetime import datetime
 
 from .header import trc_description
 
@@ -30,15 +31,74 @@ def read(
         endianness = ">" if struct.unpack("h", header["comm_order"])[0] == 0 else "<"
 
         header = {
-            name: struct.unpack(f"{endianness}{fmt}", header[name])[0]
+            name: struct.unpack(f"{endianness}{fmt}", header[name])
             for (name, fmt) in trc_description
         }
+
+        for name in header:
+            if name != "trigger_time":
+                header[name] = header[name][0]
+            else:
+                trigger_time = reversed(header["trigger_time"][:-1])
+                # convert seconds to integer (lose milliseconds)
+                trigger_time = [int(t) for t in trigger_time]
+                header[name] = datetime(*trigger_time).isoformat()
 
         # format strings
         for name in header:
             if isinstance(header[name], bytes):
                 header[name] = header[name].decode("ascii").strip("\x00")
 
+        # format some attributes in a more human-readable way
+        # https://github.com/neago/lecroy-reader/blob/49c42a85c449013c1c48d154ae70192f172e32ba/lecroyreader/lecroy.py
+        record_types = [
+            "single sweep",
+            "interleaved",
+            "histogram",
+            "graph",
+            "filter coefficient",
+            "complex",
+            "extrema",
+            "sequence obsolete",
+            "centered RIS",
+            "peak detect",
+        ]
+        header["record_type"] = record_types[header["record_type"]]
+
+        processing_types = [
+            "no processing",
+            "fir filter",
+            "interpolated",
+            "sparsed",
+            "autoscaled",
+            "no result",
+            "rolling",
+            "cumulative",
+        ]
+        header["processing_done"] = processing_types[header["processing_done"]]
+
+        vertical_couplings = [
+            "DC 50 Ohm",
+            "ground",
+            "DC 1 MOhm",
+            "ground",
+            "AC 1 MOhm",
+        ]
+        header["vert_coupling"] = vertical_couplings[header["vert_coupling"]]
+        time_base = header["time_base"]
+        if time_base == 100:
+            header["time_base"] = "external"
+        else:
+            value = [1, 2, 5, 10, 20, 50, 100, 200, 500][time_base % 9]
+            prefix = ["p", "n", "μ", "m", "", "k"][time_base // 9]
+            header["time_base"] = f"{value} {prefix}s / div"
+
+        fixed_vert_gain = header["fixed_vert_gain"]
+        value = [1, 2, 5, 10, 20, 50, 100, 200, 500][fixed_vert_gain % 9]
+        prefix = ["μ", "m", "", "k"][fixed_vert_gain // 9]
+        header["fixed_vert_gain"] = f"{value} {prefix}V / div"
+
+        # if header only return empty arrays
         values_type = numpy.int8 if header["comm_type"] == 0 else numpy.int16
         if not header_only:
             if header["user_text"] != 0:
