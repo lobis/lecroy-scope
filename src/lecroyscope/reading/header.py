@@ -59,22 +59,31 @@ trc_description = (
     ("wave_source", "h"),
 )
 
+_trc_description_fields = {name for name, _ in trc_description}
+
 
 class Header:
     def __init__(self, header: dict):
-        for name, _ in trc_description:
+        for name in _trc_description_fields:
             setattr(self, f"_{name}", header[name])
 
     def __iter__(self):
-        for name, _ in trc_description:
+        for name in _trc_description_fields:
             yield name, getattr(self, f"_{name}")
+
+    def __getitem__(self, item):
+        if item not in _trc_description_fields:
+            raise KeyError(
+                f"Invalid header field: {item}. Valid fields are: {_trc_description_fields}"
+            )
+        return getattr(self, f"_{item}")
 
 
 # add header fields as properties
-for (_name, _) in trc_description:
+for _name in _trc_description_fields:
     setattr(
         Header,
         _name,
-        property(lambda self, name=_name: self.__getattribute__(f"_{name}")),
+        property(lambda self, name=_name: getattr(self, f"_{name}")),
     )
 del _name

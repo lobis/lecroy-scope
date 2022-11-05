@@ -101,9 +101,3 @@ def test_read_header_from_bytes():
     assert_array_equal(values_from_file, values_from_bytes)
     assert_array_equal(trigger_times_from_file, trigger_times_from_bytes)
     assert header_from_file == header_from_bytes
-
-
-def test_header():
-    header = lecroyscope.reading.Header(header_reference)
-    header_as_dict = dict(header)
-    assert header_as_dict == header_reference
