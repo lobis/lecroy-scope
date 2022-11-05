@@ -57,7 +57,7 @@ def read(
             values = numpy.array([], dtype=numpy.float64)
 
         trigger_times = trigger_times.reshape((2, -1), order="F")
-        if subarray_count := header["subarray_count"]:
+        if (subarray_count := header["subarray_count"]) > 1:
             values = values.reshape((subarray_count, -1), order="C")
 
         return header, trigger_times, values

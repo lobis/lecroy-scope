@@ -11,20 +11,29 @@ class Trace:
         self._filename = filename
 
         header, self._trigger_times, self._values = read(filename, header_only)
-
-        if header_only:
-            return
+        self._header = Header(header)
 
         # store values in voltage units
-        self._values = self._values * header["vertical_gain"]
-        self._values = self._values + header["vertical_offset"]
+        self._values = self._values * self._header["vertical_gain"]
+        self._values = self._values + self._header["vertical_offset"]
 
         # compute time values
         self._time = (
-            numpy.arange(self._values.shape[-1]) * header["horiz_interval"]
-            + header["horiz_offset"]
+            numpy.arange(self._values.shape[-1]) * self._header["horiz_interval"]
+            + self._header["horiz_offset"]
         )
-        self._header = Header(header)
+
+    def __len__(self):
+        if not self._header.sequence:
+            return 1
+        return len(self._values)
+
+    def __iter__(self):
+        if len(self) == 1:
+            yield self._time, self._values
+        else:
+            for single in self._values:
+                yield self._time, single
 
     @property
     def header(self):
