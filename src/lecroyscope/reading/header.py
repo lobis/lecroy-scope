@@ -65,6 +65,10 @@ class Header:
         for name, _ in trc_description:
             setattr(self, f"_{name}", header[name])
 
+    def __iter__(self):
+        for name, _ in trc_description:
+            yield name, getattr(self, f"_{name}")
+
 
 # add header fields as properties
 for (_name, _) in trc_description:
