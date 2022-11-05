@@ -7,10 +7,15 @@ from .header import Header
 
 
 class Trace:
-    def __init__(self, filename: str | PathLike[str], header_only: bool = False):
-        self._filename = filename
+    def __init__(
+        self, filename_or_bytes: str | PathLike[str] | bytes, header_only: bool = False
+    ):
 
-        header, self._trigger_times, self._values = read(filename, header_only)
+        self._filename = (
+            filename_or_bytes if not isinstance(filename_or_bytes, bytes) else ""
+        )
+
+        header, self._trigger_times, self._values = read(filename_or_bytes, header_only)
         self._header = Header(header)
 
         # store values in voltage units
