@@ -12,7 +12,7 @@ authors = [
 ]
 description = "An unofficial Python package 🐍📦 to interface with Teledyne LeCroy oscilloscopes and read binary trace files (.trc)"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
