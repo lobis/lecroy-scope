@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import mmap
 from os import PathLike
 import struct
@@ -118,7 +120,7 @@ def read(
             values = numpy.array([], dtype=values_type)
 
         trigger_times = trigger_times.reshape((2, -1), order="F")
-        if (subarray_count := header["subarray_count"]) > 1:
-            values = values.reshape((subarray_count, -1), order="C")
+        if header["subarray_count"] > 1:
+            values = values.reshape((header["subarray_count"], -1), order="C")
 
         return header, trigger_times, values
