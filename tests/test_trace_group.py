@@ -10,8 +10,6 @@ files_path = Path(__file__).parent / "files"
 
 
 def test_trace_group_from_files(tmp_path):
-    filename = files_path / "header.trc"
-
     filenames = []
     channels = [1, 2, 3, 4]
     for channel in channels:
