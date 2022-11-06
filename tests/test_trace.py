@@ -49,3 +49,33 @@ def test_trace_channel():
 
     trace = lecroyscope.Trace(filename, channel=3)
     assert trace.channel == 3
+
+
+def test_trace_channel_from_filename_helper():
+    assert lecroyscope.reading._get_channel_from_trc_filename("invalid.trc") is None
+    assert lecroyscope.reading._get_channel_from_trc_filename("C2Trace00001.trc") == 2
+    assert lecroyscope.reading._get_channel_from_trc_filename("C3Trace01021.trc") == 3
+    assert (
+        lecroyscope.reading._get_channel_from_trc_filename(
+            "/this/is/ignored/C2Trace00001.trc"
+        )
+        == 2
+    )
+    assert (
+        lecroyscope.reading._get_channel_from_trc_filename("C3Tra1ce01021.trc") is None
+    )
+    assert lecroyscope.reading._get_channel_from_trc_filename("C3Trace1.trc") is None
+
+
+def test_trace_channel_from_filename(tmp_path):
+    for filename, channel in [
+        ("C2Trace00001.trc", 2),
+        ("C3Trace01021.trc", 3),
+        ("C4Trace01241.trc", 4),
+        ("none.trc", None),
+    ]:
+        tmp_file = tmp_path / filename
+        tmp_file.write_bytes((files_path / "header.trc").read_bytes())
+
+        trace = lecroyscope.Trace(tmp_file)
+        assert trace.channel == channel
