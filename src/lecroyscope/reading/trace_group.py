@@ -4,25 +4,33 @@ from os import PathLike
 
 from .trace import Trace
 
+from pathlib import Path
+from glob import glob
+
 
 class TraceGroup:
     def __init__(self, *args: str | PathLike[str] | Trace):
         self._traces = dict()
 
         for trace_or_init_argument in args:
-            trace = trace_or_init_argument
+            traces = [trace_or_init_argument]
             if not isinstance(trace_or_init_argument, Trace):
-                trace = Trace(trace_or_init_argument)
+                path = Path(trace_or_init_argument)
+                if "*" in str(path):
+                    traces = [Trace(filename) for filename in glob(str(path))]
+                else:
+                    traces = [Trace(trace_or_init_argument)]
 
-            if trace.channel is None:
-                raise ValueError("Trace must have a channel number")
+            for trace in traces:
+                if trace.channel is None:
+                    raise ValueError("Trace must have a channel number")
 
-            if trace.channel in self._traces:
-                raise ValueError(
-                    f"Channel {trace.channel} already exists in trace group"
-                )
+                if trace.channel in self._traces:
+                    raise ValueError(
+                        f"Channel {trace.channel} already exists in trace group"
+                    )
 
-            self._traces[trace.channel] = trace
+                self._traces[trace.channel] = trace
 
     def __iter__(self):
         for trace in self._traces.values():

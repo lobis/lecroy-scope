@@ -18,13 +18,17 @@ def test_trace_group_from_files(tmp_path):
         tmp_file.write_bytes((files_path / "header.trc").read_bytes())
         filenames.append(tmp_file)
 
-    trace_group = lecroyscope.TraceGroup(*filenames)
+    # check glob works
+    for trace_group in [
+        lecroyscope.TraceGroup(*filenames),
+        lecroyscope.TraceGroup(tmp_path / "C*Trace00001.trc"),
+    ]:
 
-    for i, trace in enumerate(trace_group):
-        assert isinstance(trace, lecroyscope.Trace)
-        assert trace.channel == channels[i]
+        for i, trace in enumerate(trace_group):
+            assert isinstance(trace, lecroyscope.Trace)
+            assert trace.channel == channels[i]
 
-    assert len(trace_group) == len(channels)
+        assert len(trace_group) == len(channels)
 
-    for channel in channels:
-        assert channel == trace_group[channel].channel
+        for channel in channels:
+            assert channel == trace_group[channel].channel
