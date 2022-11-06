@@ -9,7 +9,9 @@ from .file import read
 from .header import Header
 
 
-def _get_channel_from_trc_filename(filename: str | PathLike[str]) -> int | None:
+def _get_channel_trace_from_trc_filename(
+    filename: str | PathLike[str],
+) -> tuple[int, int] | None:
     """
     Get channel number from trc filename.
     trc files follow the pattern 'C{n}Trace{NNNNNN}.trc' where n is the channel number and NNNNNN is the trace number.
@@ -25,7 +27,9 @@ def _get_channel_from_trc_filename(filename: str | PathLike[str]) -> int | None:
     if match is None:
         return None
 
-    return int(match.group(1))
+    channel = int(match.group(1))
+    trace_number = int(match.group(2).lstrip("0"))
+    return channel, trace_number
 
 
 class Trace:
@@ -45,9 +49,9 @@ class Trace:
             self.channel = channel
         elif not isinstance(filename_or_bytes, bytes):
             # attempt to get channel number from filename
-            channel = _get_channel_from_trc_filename(filename_or_bytes)
-            if channel is not None:
-                self.channel = channel
+            channel_trace = _get_channel_trace_from_trc_filename(filename_or_bytes)
+            if channel_trace is not None:
+                self.channel = channel_trace[0]
 
         header, self._trigger_times, self._voltage = read(
             filename_or_bytes, header_only

@@ -52,19 +52,26 @@ def test_trace_channel():
 
 
 def test_trace_channel_from_filename_helper():
-    assert lecroyscope.reading._get_channel_from_trc_filename("invalid.trc") is None
-    assert lecroyscope.reading._get_channel_from_trc_filename("C2Trace00001.trc") == 2
-    assert lecroyscope.reading._get_channel_from_trc_filename("C3Trace01021.trc") == 3
     assert (
-        lecroyscope.reading._get_channel_from_trc_filename(
-            "/this/is/ignored/C2Trace00001.trc"
-        )
-        == 2
+        lecroyscope.reading._get_channel_trace_from_trc_filename("invalid.trc") is None
+    )
+    assert lecroyscope.reading._get_channel_trace_from_trc_filename(
+        "C2Trace00001.trc"
+    ) == (2, 1)
+    assert lecroyscope.reading._get_channel_trace_from_trc_filename(
+        "C3Trace01021.trc"
+    ) == (3, 1021)
+    assert lecroyscope.reading._get_channel_trace_from_trc_filename(
+        "/this/is/ignored/C2Trace00001.trc"
+    ) == (2, 1)
+    assert (
+        lecroyscope.reading._get_channel_trace_from_trc_filename("C3Tra1ce01021.trc")
+        is None
     )
     assert (
-        lecroyscope.reading._get_channel_from_trc_filename("C3Tra1ce01021.trc") is None
+        lecroyscope.reading._get_channel_trace_from_trc_filename("C3Trace01.trc")
+        is None
     )
-    assert lecroyscope.reading._get_channel_from_trc_filename("C3Trace1.trc") is None
 
 
 def test_trace_channel_from_filename(tmp_path):
