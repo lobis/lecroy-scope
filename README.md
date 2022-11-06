@@ -10,7 +10,7 @@ files (`*.trc`).
 Currently only reading trace files is supported.
 
 This package is based on
-the [lecroy-reader](https://github.com/neago/lecroy-reader/blob/49c42a85c449013c1c48d154ae70192f172e32ba/lecroyreader)
+the [lecroy-reader](https://github.com/neago/lecroy-reader/blob/49c42a85c449013c1c48d154ae70192f172e32ba)
 project.
 
 ## 🐞 Disclaimer
