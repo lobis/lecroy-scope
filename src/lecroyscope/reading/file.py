@@ -39,9 +39,10 @@ def read(
             if name != "trigger_time":
                 header[name] = header[name][0]
             else:
-                trigger_time = reversed(header["trigger_time"][:-1])
-                # convert seconds to integer (lose milliseconds)
+                trigger_time = list(reversed(header["trigger_time"][:-1]))
+                microseconds = int((trigger_time[-1] % 1) * 1e6)
                 trigger_time = [int(t) for t in trigger_time]
+                trigger_time.append(microseconds)
                 header[name] = datetime(*trigger_time).isoformat()
 
         # format strings

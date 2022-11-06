@@ -45,7 +45,7 @@ header_reference_dict = {
     "vert_unit": "V",
     "horiz_unit": "S",
     "horiz_uncertainty": 9.999999960041972e-13,
-    "trigger_time": "2022-10-13T16:29:38",
+    "trigger_time": "2022-10-13T16:29:38.475715",
     "acq_duration": 0.0,
     "record_type": "single sweep",
     "processing_done": "no processing",
@@ -81,7 +81,7 @@ def test_header_string():
     assert (
         str(header)
         == """Instrument name: LECROYWR64Xi-A
-Trigger time: 2022-10-13T16:29:38
+Trigger time: 2022-10-13T16:29:38.475715
 Vertical coupling: DC 50 Ohm
 Time base: 200 ns / div
 Horizontal interval: 9.999999717180685e-10
