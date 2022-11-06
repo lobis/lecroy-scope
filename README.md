@@ -1,8 +1,11 @@
-# lecroy-scope
+# lecroyscope
 
 [![Build and Test](https://github.com/lobis/lecroy-scope/actions/workflows/build-test.yml/badge.svg)](https://github.com/lobis/lecroy-scope/actions/workflows/build-test.yml)
 
-An unofficial Python package 🐍📦 to interface with Teledyne LeCroy oscilloscopes and read binary trace files (`*.trc`).
+## 🤔 What is this?
+
+This is an unofficial Python package to interface with Teledyne LeCroy oscilloscopes and read binary trace
+files (`*.trc`).
 
 Currently only reading trace files is supported.
 
@@ -10,7 +13,17 @@ This package is based on
 the [lecroy-reader](https://github.com/neago/lecroy-reader/blob/49c42a85c449013c1c48d154ae70192f172e32ba/lecroyreader)
 project.
 
-## Installation
+## 🐞 Disclaimer
+
+The features of this package are based on my needs at the time of writing.
+I have done very limited testing, using a single oscilloscope and a few trace files.
+
+If you use this package, it is very possible you find a bug or some oversight.
+You are encouraged to make a [pull request](https://github.com/lobis/lecroy-scope/pulls) or to create
+an [issue](https://github.com/lobis/lecroy-scope/issues) to report a bug, to request additional features or to suggest
+improvements.
+
+## 📦 Installation
 
 Installation via `pip` is supported:
 
@@ -18,7 +31,7 @@ Installation via `pip` is supported:
 pip install .
 ```
 
-## Usage
+## 👨‍💻 Usage
 
 ### Reading binary trace files (`*.trc`)
 
