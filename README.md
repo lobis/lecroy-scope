@@ -2,6 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/lecroyscope.svg)](https://badge.fury.io/py/lecroyscope)
 [![Build and Test](https://github.com/lobis/lecroy-scope/actions/workflows/build-test.yml/badge.svg)](https://github.com/lobis/lecroy-scope/actions/workflows/build-test.yml)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lecroyscope)
 
 ## 🤔 What is this?
 
@@ -14,7 +15,7 @@ This package is based on
 the [lecroy-reader](https://github.com/neago/lecroy-reader/blob/49c42a85c449013c1c48d154ae70192f172e32ba)
 project.
 
-## 🐞 Disclaimer
+## ⚠️ Disclaimer
 
 The features of this package are based on my needs at the time of writing.
 I have done very limited testing, using a single oscilloscope and a few trace files.
@@ -24,7 +25,7 @@ You are encouraged to make a [pull request](https://github.com/lobis/lecroy-scop
 an [issue](https://github.com/lobis/lecroy-scope/issues) to report a bug, to request additional features or to suggest
 improvements.
 
-## 📦 Installation
+## ⚙️ Installation
 
 Installation via `pip` is supported.
 To install the latest [published version](https://github.com/lobis/lecroy-scope/releases), run:
