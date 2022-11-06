@@ -1,5 +1,6 @@
 # lecroyscope
 
+[![PyPI version](https://badge.fury.io/py/lecroyscope.svg)](https://badge.fury.io/py/lecroyscope)
 [![Build and Test](https://github.com/lobis/lecroy-scope/actions/workflows/build-test.yml/badge.svg)](https://github.com/lobis/lecroy-scope/actions/workflows/build-test.yml)
 
 ## 🤔 What is this?
@@ -25,10 +26,17 @@ improvements.
 
 ## 📦 Installation
 
-Installation via `pip` is supported:
+Installation via `pip` is supported.
+To install the latest [published version](https://github.com/lobis/lecroy-scope/releases), run:
 
 ```bash
-pip install .
+pip install lecroyscope
+```
+
+To install the package from source, including test dependencies, clone the repository and run:
+
+```bash
+pip install .[test]
 ```
 
 ## 👨‍💻 Usage
