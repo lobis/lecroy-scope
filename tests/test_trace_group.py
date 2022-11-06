@@ -1,7 +1,5 @@
 import pytest
 
-from numpy.testing import assert_array_equal
-import numpy as np
 from pathlib import Path
 
 import lecroyscope
@@ -26,6 +24,7 @@ def test_trace_group_from_files(tmp_path):
 
         for i, trace in enumerate(trace_group):
             assert isinstance(trace, lecroyscope.Trace)
+            # this checks sorting too! (glob order is not the same across platforms)
             assert trace.channel == channels[i]
 
         assert len(trace_group) == len(channels)
