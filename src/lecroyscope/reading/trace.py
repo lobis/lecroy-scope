@@ -10,12 +10,19 @@ from .header import Header
 
 class Trace:
     def __init__(
-        self, filename_or_bytes: str | PathLike[str] | bytes, header_only: bool = False
+        self,
+        filename_or_bytes: str | PathLike[str] | bytes,
+        header_only: bool = False,
+        channel: int | None = None,
     ):
 
         self._filename = (
             filename_or_bytes if not isinstance(filename_or_bytes, bytes) else ""
         )
+
+        self._channel = None
+        if channel:
+            self.channel = channel
 
         header, self._trigger_times, self._voltage = read(
             filename_or_bytes, header_only
@@ -51,6 +58,16 @@ class Trace:
     @property
     def header_only(self):
         return self._voltage.size == 0
+
+    @property
+    def channel(self):
+        return self._channel
+
+    @channel.setter
+    def channel(self, value: int):
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError("Channel number must be a positive integer (1, 2, 3, ...)")
+        self._channel = value
 
     @property
     def voltage(self):

@@ -33,3 +33,19 @@ def test_trace_iter():
     # check all times are equal
     for time in times:
         assert_array_equal(time, times[0])
+
+
+def test_trace_channel():
+    filename = files_path / "header.trc"
+
+    trace = lecroyscope.Trace(filename)
+    assert trace.channel is None
+
+    trace.channel = 2
+    assert trace.channel == 2
+
+    with pytest.raises(ValueError):
+        trace.channel = 0
+
+    trace = lecroyscope.Trace(filename, channel=3)
+    assert trace.channel == 3
