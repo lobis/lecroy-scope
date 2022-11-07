@@ -63,7 +63,7 @@ _trc_description_fields = {name for name, _ in trc_description}
 
 
 class Header:
-    def __init__(self, header: dict):
+    def __init__(self, header: dict) -> None:
         for name in _trc_description_fields:
             setattr(self, f"_{name}", header[name])
 
@@ -92,7 +92,7 @@ Wave array count: {self["wave_array_count"]}
 Subarray count: {self["subarray_count"]}"""
 
     @property
-    def sequence(self):
+    def sequence(self) -> bool:
         return self["subarray_count"] > 1
 
 

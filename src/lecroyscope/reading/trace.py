@@ -91,15 +91,15 @@ class Trace:
                 yield self._time, single
 
     @property
-    def header(self):
+    def header(self) -> Header:
         return self._header
 
     @property
-    def header_only(self):
+    def header_only(self) -> bool:
         return self._voltage.size == 0
 
     @property
-    def channel(self):
+    def channel(self) -> int:
         return self._channel
 
     @channel.setter
@@ -109,22 +109,22 @@ class Trace:
         self._channel = value
 
     @property
-    def voltage(self):
+    def voltage(self) -> numpy.ndarray:
         return self._voltage
 
     @property
-    def trigger_times(self):
+    def trigger_times(self) -> numpy.ndarray:
         return self._trigger_times
 
     @property
-    def time(self):
+    def time(self) -> numpy.ndarray:
         return self._time
 
     # Alternative names
     @property
-    def x(self):
+    def x(self) -> numpy.ndarray:
         return self._time
 
     @property
-    def y(self):
+    def y(self) -> numpy.ndarray:
         return self._voltage
