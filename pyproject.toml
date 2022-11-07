@@ -31,7 +31,7 @@ test = [
 ]
 
 [project.urls]
-"Download" = "https://github.com/scikit-hep/uproot5/releases"
+"Download" = "https://github.com/lobis/lecroy-scope/releases"
 "Homepage" = "https://github.com/lobis/lecroy-scope"
 "Bug Tracker" = "https://github.com/lobis/lecroy-scope/issues"
 
