@@ -9,17 +9,26 @@ from glob import glob
 
 
 class TraceGroup:
-    def __init__(self, *args: str | PathLike[str] | Trace):
+    def __init__(self, *args: str | PathLike[str] | Trace | bytes):
         self._traces = dict()
-
-        for trace_or_init_argument in args:
-            traces = [trace_or_init_argument]
-            if not isinstance(trace_or_init_argument, Trace):
-                path = Path(trace_or_init_argument)
+        for arg in args:
+            traces = []
+            if isinstance(arg, Trace):
+                traces = [arg]
+            elif isinstance(arg, bytes):
+                trace = Trace(arg)
+                if trace.channel is None:
+                    raise ValueError(
+                        "Trace group cannot be constructed from bytes without channel number"
+                    )
+                traces.append(trace)
+            else:
+                # is pathlike string
+                path = Path(arg)
                 if "*" in str(path):
                     traces = [Trace(filename) for filename in glob(str(path))]
                 else:
-                    traces = [Trace(trace_or_init_argument)]
+                    traces = [Trace(arg)]
 
             for trace in traces:
                 if trace.channel is None:

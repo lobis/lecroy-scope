@@ -47,13 +47,19 @@ class Scope:
             raise ValueError(f"Unexpected response from scope: {response}")
         return bool(int(response))
 
-    def read(self, *channels: int):
+    def read(self, *channels: int) -> Trace | TraceGroup:
         if len(channels) == 0:
             raise ValueError("At least one channel must be specified")
         traces = []
         for channel in channels:
             self.instrument.write(f"C{channel}:WF?")
+            if len(channels) == 1:
+                trace = Trace(self.instrument.read_raw())
+                if trace.channel != channel:
+                    raise ValueError(f"Unexpected channel: {trace.channel}")
+                return trace
             traces.append(Trace(self.instrument.read_raw()))
+        traces = TraceGroup(*traces)
         return traces
 
     @property
