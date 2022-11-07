@@ -2,14 +2,16 @@ from __future__ import annotations
 
 from os import PathLike
 
-from .trace import Trace
+import numpy
 
 from pathlib import Path
 from glob import glob
 
+from .trace import Trace
+
 
 class TraceGroup:
-    def __init__(self, *args: str | PathLike[str] | Trace | bytes):
+    def __init__(self, *args: str | PathLike[str] | Trace | bytes) -> None:
         self._traces = dict()
         for arg in args:
             traces = []
@@ -41,6 +43,8 @@ class TraceGroup:
 
                 self._traces[trace.channel] = trace
 
+        if len(self._traces) == 0:
+            raise ValueError("Trace group must contain at least one trace")
         # sort by channel number
         self._traces = dict(sorted(self._traces.items()))
 
@@ -48,10 +52,35 @@ class TraceGroup:
         for trace in self._traces.values():
             yield trace
 
-    def __len__(self):
+    def __next__(self):
+        return next(self._traces.values())
+
+    def __len__(self) -> int:
         return len(self._traces)
 
-    def __getitem__(self, item: int) -> Trace:
+    def __getitem__(self, item: int) -> TraceGroup | Trace:
+        if isinstance(item, slice):
+            # when slicing, return do not use channel number as key
+            return TraceGroup(*list(self._traces.values())[item])
         if item not in self._traces:
             raise KeyError(f"Trace group does not contain channel {item}")
         return self._traces[item]
+
+    @property
+    def channels(self) -> list[int]:
+        return list(self._traces.keys())
+
+    @property
+    def time(self) -> numpy.ndarray | None:
+        """
+        Returns the time vector of the traces if they are all equal, otherwise return None
+        """
+        t = next(iter(self._traces.values())).time
+        for trace in self[1:]:
+            if not (trace.time == t).all():
+                return None
+        return t
+
+    @property
+    def x(self) -> numpy.ndarray | None:
+        return self.time

@@ -1,7 +1,7 @@
 import pytest
 
 from pathlib import Path
-
+import numpy as np
 import lecroyscope
 
 files_path = Path(__file__).parent / "files"
@@ -26,6 +26,7 @@ def test_trace_group_from_files(tmp_path):
             assert isinstance(trace, lecroyscope.Trace)
             # this checks sorting too! (glob order is not the same across platforms)
             assert trace.channel == channels[i]
+            np.testing.assert_array_equal(trace.time, trace_group.time)
 
         assert len(trace_group) == len(channels)
 
