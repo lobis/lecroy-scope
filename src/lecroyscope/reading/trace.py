@@ -47,11 +47,21 @@ class Trace:
         self._channel = None
         if channel:
             self.channel = channel
-        elif not isinstance(filename_or_bytes, bytes):
-            # attempt to get channel number from filename
-            channel_trace = _get_channel_trace_from_trc_filename(filename_or_bytes)
-            if channel_trace is not None:
-                self.channel = channel_trace[0]
+        else:
+            if isinstance(filename_or_bytes, bytes):
+                try:
+                    channel_string = filename_or_bytes[0:5].decode("ascii")
+                    regex = re.compile(r"C(\d):WF")
+                    match = regex.match(channel_string)
+                    if match:
+                        self.channel = int(match.group(1))
+                except UnicodeDecodeError:
+                    pass
+            else:
+                # attempt to get channel number from filename
+                channel_trace = _get_channel_trace_from_trc_filename(filename_or_bytes)
+                if channel_trace is not None:
+                    self.channel = channel_trace[0]
 
         header, self._trigger_times, self._voltage = read(
             filename_or_bytes, header_only
