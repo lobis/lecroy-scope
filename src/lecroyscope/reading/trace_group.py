@@ -77,7 +77,8 @@ class TraceGroup:
         """
         t = next(iter(self._traces.values())).time
         for trace in self[1:]:
-            if not (trace.time == t).all():
+            diff = numpy.abs(trace.time - t)
+            if numpy.any(diff > 1e-12):
                 return None
         return t
 
