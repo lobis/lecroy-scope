@@ -21,6 +21,12 @@ def _get_command(parameter: str):
     return f"VBS? 'return = app.{parameter}'"
 
 
+def _capitalize_first_letter(string: str) -> str:
+    if len(string) == 0:
+        return string
+    return string[0].upper() + string.lower()[1:]
+
+
 class Scope:
     def __init__(self, ip_address: str):
         # validate ip address
@@ -98,7 +104,7 @@ class Scope:
     @trigger_mode.setter
     def trigger_mode(self, value: str):
         trigger_modes = ["Stopped", "Single", "Normal", "Auto"]
-        if value not in trigger_modes:
+        if _capitalize_first_letter(value) not in trigger_modes:
             raise ValueError(
                 f"Invalid trigger mode: {value}. Valid trigger modes are: {trigger_modes}"
             )
