@@ -53,7 +53,7 @@ class TraceGroup:
             yield trace
 
     def __next__(self):
-        return next(self._traces.values())
+        return next(iter(self._traces.values()))
 
     def __len__(self) -> int:
         return len(self._traces)
