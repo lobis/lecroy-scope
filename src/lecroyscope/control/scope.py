@@ -53,20 +53,21 @@ class Scope:
             raise ValueError(f"Unexpected response from scope: {response}")
         return bool(int(response))
 
-    def read(self, *channels: int) -> Trace | TraceGroup:
+    def read(self, *channels: int, timeout: float = 30.0) -> Trace | TraceGroup:
         if len(channels) == 0:
             raise ValueError("At least one channel must be specified")
+        timeout_original = self.instrument.timeout
+        self.instrument.timeout = timeout
         traces = []
         for channel in channels:
             self.instrument.write(f"C{channel}:WF?")
-            if len(channels) == 1:
-                trace = Trace(self.instrument.read_raw())
-                if trace.channel != channel:
-                    raise ValueError(f"Unexpected channel: {trace.channel}")
-                return trace
-            traces.append(Trace(self.instrument.read_raw()))
-        traces = TraceGroup(*traces)
-        return traces
+            trace = Trace(self.instrument.read_raw())
+            if trace.channel != channel:
+                self.instrument.timeout = timeout_original
+                raise ValueError(f"Unexpected channel: {trace.channel}")
+            traces.append(trace)
+        self.instrument.timeout = timeout_original
+        return traces[0] if len(traces) == 1 else TraceGroup(*traces)
 
     @property
     def instrument(self):
