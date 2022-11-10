@@ -102,3 +102,13 @@ def test_read_trace_from_file():
         assert trace.voltage.shape == shape
         assert trace.time.shape == (251,)
         assert (trace.voltage.shape[-1],) == trace.time.shape
+
+        if not sequence:
+            # check voltage and time scaling is done properly
+            # test against signal which consists of ~ 0V baseline + sharp pulse at trigger time
+            # first bins should be ~ 0V since we are on the region before pulse
+            assert pytest.approx(np.mean(trace.voltage[0:100])) == 0.0057997689768671985
+            # time of max voltage value should be very close to trigger time (0 seconds)
+            assert (
+                pytest.approx(trace.time[np.argmax(trace.y)]) == 4.254989846811945e-09
+            )
