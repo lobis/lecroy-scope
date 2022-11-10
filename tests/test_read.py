@@ -50,3 +50,16 @@ def test_read_header_from_bytes():
     assert_array_equal(values_from_file, values_from_bytes)
     assert_array_equal(trigger_times_from_file, trigger_times_from_bytes)
     assert header_from_file == header_from_bytes
+
+
+def test_read_data_from_file():
+    for filename, shape in zip(
+        [files_path / "pulse.trc", files_path / "pulse_sequence.trc"],
+        [(251,), (20, 251)],
+    ):
+        (
+            header_from_file,
+            trigger_times_from_file,
+            values_from_file,
+        ) = lecroyscope.reading.read(filename, header_only=False)
+        assert values_from_file.shape == shape
