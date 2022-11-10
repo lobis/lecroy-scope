@@ -12,16 +12,17 @@ files_path = Path(__file__).parent / "files"
 
 
 def test_read_header():
+    filename = files_path / "header.trc"
     (
         header_header_only,
         trigger_times_header_only,
         values_header_only,
-    ) = lecroyscope.reading.read(files_path / "header.trc", header_only=True)
+    ) = lecroyscope.reading.read(filename, header_only=True)
 
     assert header_header_only == header_reference_dict
 
     header, trigger_times, values = lecroyscope.reading.read(
-        files_path / "header.trc", header_only=False
+        filename, header_only=False
     )
 
     assert header == header_header_only
@@ -39,7 +40,7 @@ def test_read_header_from_bytes():
         header_from_file,
         trigger_times_from_file,
         values_from_file,
-    ) = lecroyscope.reading.read(files_path / "header.trc", header_only=True)
+    ) = lecroyscope.reading.read(filename, header_only=True)
 
     (
         header_from_bytes,
