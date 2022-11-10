@@ -89,13 +89,16 @@ def test_trace_channel_from_filename(tmp_path):
 
 
 def test_read_trace_from_file():
-    for filename, shape, length in zip(
+    for filename, shape, length, sequence in zip(
         [files_path / "pulse.trc", files_path / "pulse_sequence.trc"],
         [(251,), (20, 251)],
         [1, 20],
+        [False, True],
     ):
         trace = lecroyscope.Trace(filename)
         assert len(trace) == length
+        assert trace.header_only is False
+        assert trace.sequence == sequence
         assert trace.voltage.shape == shape
         assert trace.time.shape == (251,)
         assert (trace.voltage.shape[-1],) == trace.time.shape

@@ -99,6 +99,10 @@ class Trace:
         return self._voltage.size == 0
 
     @property
+    def sequence(self) -> bool:
+        return self.header.sequence
+
+    @property
     def channel(self) -> int:
         return self._channel
 
