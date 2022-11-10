@@ -70,7 +70,7 @@ class Trace:
 
         # store values in voltage units
         self._voltage = self._voltage * self._header["vertical_gain"]
-        self._voltage = self._voltage + self._header["vertical_offset"]
+        self._voltage = self._voltage - self._header["vertical_offset"]
 
         # compute time values
         self._time = (
