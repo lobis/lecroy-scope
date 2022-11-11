@@ -39,13 +39,12 @@ class Trace:
         header_only: bool = False,
         channel: int | None = None,
     ):
-
         self._filename = (
             filename_or_bytes if not isinstance(filename_or_bytes, bytes) else ""
         )
 
         self._channel = None
-        if channel:
+        if channel is not None:
             self.channel = channel
         else:
             if isinstance(filename_or_bytes, bytes):
