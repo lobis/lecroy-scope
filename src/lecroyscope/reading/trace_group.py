@@ -43,8 +43,6 @@ class TraceGroup:
 
                 self._traces[trace.channel] = trace
 
-        if len(self._traces) == 0:
-            raise ValueError("Trace group must contain at least one trace")
         # sort by channel number
         self._traces = dict(sorted(self._traces.items()))
 
@@ -58,7 +56,7 @@ class TraceGroup:
     def __len__(self) -> int:
         return len(self._traces)
 
-    def __getitem__(self, item: int) -> TraceGroup | Trace:
+    def __getitem__(self, item: int | slice) -> TraceGroup | Trace:
         if isinstance(item, slice):
             # when slicing, return do not use channel number as key
             return TraceGroup(*list(self._traces.values())[item])
@@ -71,16 +69,27 @@ class TraceGroup:
         return list(self._traces.keys())
 
     @property
+    def trace_length(self) -> int | None:
+        """
+        Returns length of the traces if they are all equal, otherwise return None
+        """
+        length_reference = len(self[self.channels[0]])
+        for trace in self[1:]:
+            if len(trace) != length_reference:
+                return None
+        return length_reference
+
+    @property
     def time(self) -> numpy.ndarray | None:
         """
         Returns the time vector of the traces if they are all equal, otherwise return None
         """
-        t = next(iter(self._traces.values())).time
+        time_reference = self[self.channels[0]].time
         for trace in self[1:]:
-            diff = numpy.abs(trace.time - t)
+            diff = numpy.abs(trace.time - time_reference)
             if numpy.any(diff > 1e-12):
                 return None
-        return t
+        return time_reference
 
     @property
     def x(self) -> numpy.ndarray | None:
