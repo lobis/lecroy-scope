@@ -29,6 +29,9 @@ dynamic = [
 test = [
     "pytest",
 ]
+dev = [
+    "pytest", "pre-commit", "uproot", "awkward",
+]
 
 [project.urls]
 "Download" = "https://github.com/lobis/lecroy-scope/releases"
