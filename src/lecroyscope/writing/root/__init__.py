@@ -48,8 +48,13 @@ def get_tree_data(trace_or_group: Trace | TraceGroup):
             "Input argument should be either 'lecroyscope.Trace' or 'lecroyscope.TraceGroup'"
         )
 
-    channels = {f"CH{trace.channel}": trace.voltage for trace in trace_group}
+    channels = {
+        f"CH{trace.channel}": trace.voltage.reshape((trace_group.trace_length, -1))
+        for trace in trace_group
+    }
     return {
-        "time": numpy.array(trace_group.trace_length * [trace_group.time]),
+        "time": numpy.array(trace_group.trace_length * [trace_group.time]).reshape(
+            (trace_group.trace_length, -1)
+        ),
         **channels,
     }
