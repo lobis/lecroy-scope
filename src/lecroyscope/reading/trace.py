@@ -21,7 +21,7 @@ def _get_channel_trace_from_trc_filename(
     # get filename from path
     filename = Path(filename).name
 
-    regex = re.compile(r"C(\d)Trace(\d\d\d\d\d).trc")
+    regex = re.compile(r"C(\d+)Trace(\d\d\d\d\d).trc")
     match = regex.match(filename)
 
     if match is None:
@@ -51,7 +51,7 @@ class Trace:
             if isinstance(filename_or_bytes, bytes):
                 try:
                     channel_string = filename_or_bytes[0:5].decode("ascii")
-                    regex = re.compile(r"C(\d):WF")
+                    regex = re.compile(r"C(\d+):WF")
                     match = regex.match(channel_string)
                     if match:
                         self.channel = int(match.group(1))
