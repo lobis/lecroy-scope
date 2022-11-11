@@ -40,9 +40,7 @@ def get_tree_data(trace_or_group: Trace | TraceGroup):
     if isinstance(trace_or_group, TraceGroup):
         trace_group = trace_or_group
     elif isinstance(trace_or_group, Trace):
-        print("creating trace group")
         trace_group = TraceGroup(trace_or_group)
-        print("finished trace group")
     else:
         raise ValueError(
             "Input argument should be either 'lecroyscope.Trace' or 'lecroyscope.TraceGroup'"
