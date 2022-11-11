@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uproot
+import awkward
 import numpy
 from lecroyscope import Trace, TraceGroup
 
