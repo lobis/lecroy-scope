@@ -112,3 +112,18 @@ def test_read_trace_from_file():
             assert (
                 pytest.approx(trace.time[np.argmax(trace.y)]) == 4.254989846811945e-09
             )
+
+
+def test_trace_adc_values():
+    filename = files_path / "pulse.trc"
+    trace = lecroyscope.Trace(filename)
+
+    adc_from_trace = trace.adc_values
+
+    (
+        _,
+        _,
+        adc_from_file,
+    ) = lecroyscope.reading.read(filename)
+
+    assert_array_equal(adc_from_file, adc_from_trace)

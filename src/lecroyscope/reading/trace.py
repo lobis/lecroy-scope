@@ -68,13 +68,13 @@ class Trace:
         self._header = Header(header)
 
         # store values in voltage units
-        self._voltage = self._voltage * self._header["vertical_gain"]
-        self._voltage = self._voltage - self._header["vertical_offset"]
+        self._voltage = self._voltage * self.header["vertical_gain"]
+        self._voltage = self._voltage - self.header["vertical_offset"]
 
         # compute time values
         self._time = (
-            numpy.arange(self._voltage.shape[-1]) * self._header["horiz_interval"]
-            + self._header["horiz_offset"]
+            numpy.arange(self._voltage.shape[-1]) * self.header["horiz_interval"]
+            + self.header["horiz_offset"]
         )
 
     def __len__(self):
@@ -114,6 +114,14 @@ class Trace:
     @property
     def voltage(self) -> numpy.ndarray:
         return self._voltage
+
+    @property
+    def adc_values(self) -> numpy.ndarray:
+        return numpy.array(
+            (self._voltage + self.header["vertical_offset"])
+            / self.header["vertical_gain"],
+            dtype=int,
+        )
 
     @property
     def trigger_times(self) -> numpy.ndarray:
