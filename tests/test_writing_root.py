@@ -20,7 +20,6 @@ def test_writing_tree(tmp_path):
                 files_path / "pulse_sequence.trc",
             ],
             [False, False, False, True, False],
-            strict=True,
         )
     ):
         if not multiply:
