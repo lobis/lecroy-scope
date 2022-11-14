@@ -123,3 +123,58 @@ class Scope:
                 f"Invalid trigger mode: {value}. Valid trigger modes are: {trigger_modes}"
             )
         self._ask(_set_command("Acquisition.TriggerMode", value))
+
+    def channel(self, channel: int) -> Channel:
+        return Channel(scope=self, channel=channel)
+
+
+class Channel:
+    def __init__(self, scope: Scope, channel: int):
+        self._scope = scope
+        self.channel = channel
+
+    def __str__(self):
+        return f"C{self._channel:d}"
+
+    @property
+    def channel(self):
+        return self._channel
+
+    @channel.setter
+    def channel(self, value: int):
+        if f"C{value:d}" not in self._scope.name_all:
+            valid_channels = [
+                c for c in self._scope.name_all if c.startswith("C") and len(c) == 2
+            ]
+            raise ValueError(
+                f"""Invalid channel: {value}. Valid channels are: {valid_channels}"""
+            )
+        self._channel = value
+
+    @property
+    def vertical_scale(self) -> float:
+        return float(
+            self._scope._ask(_get_command(f"Acquisition.{str(self)}.VerScale"))
+        )
+
+    @vertical_scale.setter
+    def vertical_scale(self, value: float) -> None:
+        self._scope._ask(_set_command(f"Acquisition.{str(self)}.VerScale", value))
+
+    @property
+    def vertical_offset(self) -> float:
+        return float(
+            self._scope._ask(_get_command(f"Acquisition.{str(self)}.VerOffset"))
+        )
+
+    @vertical_offset.setter
+    def vertical_offset(self, value: float) -> None:
+        self._scope._ask(_set_command(f"Acquisition.{str(self)}.VerOffset", value))
+
+    # TODO: add setter
+    @property
+    def vertical_coupling(self) -> str:
+        return self._scope._ask(_get_command(f"Acquisition.{str(self)}.Coupling"))
+
+    def read(self) -> Trace:
+        return self._scope.read(self.channel)
