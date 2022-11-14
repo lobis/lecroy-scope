@@ -181,5 +181,8 @@ class Channel:
     def vertical_coupling(self) -> str:
         return self._scope._ask(_get_command(f"Acquisition.{str(self)}.Coupling"))
 
+    def find_scale(self) -> None:
+        self._scope._ask(f"VBS? 'app.Acquisition.{str(self)}.FindScale()'")
+
     def read(self) -> Trace:
         return self._scope.read(self.channel)
