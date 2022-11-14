@@ -1,9 +1,14 @@
 from __future__ import annotations
+from functools import cached_property
 
 import vxi11
 import ipaddress
 
 from lecroyscope import Trace, TraceGroup
+
+
+# The following manual can be references for additional commands and documentation:
+# https://cdn.teledynelecroy.com/files/manuals/automation_command_ref_manual_wm-wp.pdf
 
 
 def _parse_response(response: str) -> str:
@@ -86,11 +91,11 @@ class Scope:
     def instrument(self):
         return self._instrument
 
-    @property
+    @cached_property
     def id(self):
         return self.instrument.ask("*IDN?")
 
-    @property
+    @cached_property
     def name_all(self):
         name_all = self._ask(_get_command("ExecsNameAll"))
         return name_all.split(",")
