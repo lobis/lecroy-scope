@@ -6,18 +6,20 @@ import ipaddress
 from lecroyscope import Trace, TraceGroup
 
 
-def _parse_response(response: str):
+def _parse_response(response: str) -> str:
     if response.startswith("VBS "):
         response = response[4:]
     return response.strip()
 
 
-def _set_command(parameter: str, value: str | int | float, return_value: bool = False):
+def _set_command(
+    parameter: str, value: str | int | float, return_value: bool = False
+) -> str:
     return_command = f"return = app.{parameter}" if return_value else ""
     return f"""VBS? \'app.{parameter} = "{value}"\n{return_command}\'"""
 
 
-def _get_command(parameter: str):
+def _get_command(parameter: str) -> str:
     return f"VBS? 'return = app.{parameter}'"
 
 
@@ -31,10 +33,25 @@ class Scope:
     def __init__(self, ip_address: str):
         # validate ip address
         ip_address = str(ipaddress.ip_address(ip_address))
+
         self._instrument = vxi11.Instrument(ip_address)
+        self.timeout = 30.0
 
     def __del__(self):
         self._instrument.close()
+
+    @property
+    def timeout(self) -> float:
+        """ " Returns instrument timeout in seconds"""
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self, timeout: float):
+        """ " Sets instrument timeout in seconds"""
+        if timeout <= 0.0:
+            raise ValueError("Scope timeout must be a positive floating point number")
+        self._timeout = timeout
+        self._instrument.timeout = self._timeout
 
     def _ask(self, command: str):
         return _parse_response(self.instrument.ask(command))
@@ -45,28 +62,24 @@ class Scope:
     def set(self, parameter: str, value: str | int | float):
         return self._ask(_set_command(parameter, value, return_value=True))
 
-    def acquire(self, timeout: float = 15.0, force: bool = False) -> bool:
+    def acquire(self, force: bool = False) -> bool:
         response = self._ask(
-            f"VBS? 'return = app.Acquisition.acquire({timeout}, {force})'"
+            f"VBS? 'return = app.Acquisition.acquire({self.timeout}, {force})'"
         )
         if response not in ["0", "1"]:
             raise ValueError(f"Unexpected response from scope: {response}")
         return bool(int(response))
 
-    def read(self, *channels: int, timeout: float = 30.0) -> Trace | TraceGroup:
+    def read(self, *channels: int) -> Trace | TraceGroup:
         if len(channels) == 0:
             raise ValueError("At least one channel must be specified")
-        timeout_original = self.instrument.timeout
-        self.instrument.timeout = timeout
         traces = []
         for channel in channels:
             self.instrument.write(f"C{channel}:WF?")
             trace = Trace(self.instrument.read_raw())
             if trace.channel != channel:
-                self.instrument.timeout = timeout_original
                 raise ValueError(f"Unexpected channel: {trace.channel}")
             traces.append(trace)
-        self.instrument.timeout = timeout_original
         return traces[0] if len(traces) == 1 else TraceGroup(*traces)
 
     @property
