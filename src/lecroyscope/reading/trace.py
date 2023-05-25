@@ -10,7 +10,7 @@ from .header import Header
 
 
 def _get_channel_trace_from_trc_filename(
-        filename: str | PathLike[str],
+    filename: str | PathLike[str],
 ) -> tuple[int, int] | None:
     """
     Get channel number from trc filename.
@@ -34,10 +34,10 @@ def _get_channel_trace_from_trc_filename(
 
 class Trace:
     def __init__(
-            self,
-            filename_or_bytes: str | PathLike[str] | bytes,
-            header_only: bool = False,
-            channel: int | None = None,
+        self,
+        filename_or_bytes: str | PathLike[str] | bytes,
+        header_only: bool = False,
+        channel: int | None = None,
     ):
         self._filename = (
             filename_or_bytes if not isinstance(filename_or_bytes, bytes) else ""
@@ -73,11 +73,13 @@ class Trace:
 
         # compute time values
         self._time = (
-                numpy.arange(self._voltage.shape[-1]) * self.header["horiz_interval"]
-                + self.header["horiz_offset"]
+            numpy.arange(self._voltage.shape[-1]) * self.header["horiz_interval"]
+            + self.header["horiz_offset"]
         )
 
-        assert self._voltage.shape[-1] == self._time.shape[-1], "Time and voltage arrays must have the same length"
+        assert (
+            self._voltage.shape[-1] == self._time.shape[-1]
+        ), "Time and voltage arrays must have the same length"
 
     def __len__(self):
         if not self._header.sequence:

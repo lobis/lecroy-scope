@@ -55,8 +55,12 @@ def test_read_header_from_bytes():
 
 def test_read_data_from_file():
     for filename, shape in zip(
-            [files_path / "pulse.trc", files_path / "pulse_sequence.trc", files_path / "issue_1.trc"],
-            [(502,), (20, 502), (100002,)],
+        [
+            files_path / "pulse.trc",
+            files_path / "pulse_sequence.trc",
+            files_path / "issue_1.trc",
+        ],
+        [(502,), (20, 502), (100002,)],
     ):
         (
             header_from_file,

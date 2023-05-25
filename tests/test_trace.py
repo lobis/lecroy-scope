@@ -53,7 +53,7 @@ def test_trace_channel():
 
 def test_trace_channel_from_filename_helper():
     assert (
-            lecroyscope.reading._get_channel_trace_from_trc_filename("invalid.trc") is None
+        lecroyscope.reading._get_channel_trace_from_trc_filename("invalid.trc") is None
     )
     assert lecroyscope.reading._get_channel_trace_from_trc_filename(
         "C2Trace00001.trc"
@@ -65,12 +65,12 @@ def test_trace_channel_from_filename_helper():
         "/this/is/ignored/C2Trace00001.trc"
     ) == (2, 1)
     assert (
-            lecroyscope.reading._get_channel_trace_from_trc_filename("C3Tra1ce01021.trc")
-            is None
+        lecroyscope.reading._get_channel_trace_from_trc_filename("C3Tra1ce01021.trc")
+        is None
     )
     assert (
-            lecroyscope.reading._get_channel_trace_from_trc_filename("C3Trace01.trc")
-            is None
+        lecroyscope.reading._get_channel_trace_from_trc_filename("C3Trace01.trc")
+        is None
     )
 
 
@@ -90,10 +90,14 @@ def test_trace_channel_from_filename(tmp_path):
 
 def test_read_trace_from_file():
     for filename, shape, length, sequence in zip(
-            [files_path / "pulse.trc", files_path / "pulse_sequence.trc", files_path / "issue_1.trc"],
-            [(502,), (20, 502), (100002,)],
-            [1, 20, 1],
-            [False, True, False],
+        [
+            files_path / "pulse.trc",
+            files_path / "pulse_sequence.trc",
+            files_path / "issue_1.trc",
+        ],
+        [(502,), (20, 502), (100002,)],
+        [1, 20, 1],
+        [False, True, False],
     ):
         trace = lecroyscope.Trace(filename)
         assert len(trace) == length
@@ -110,7 +114,7 @@ def test_read_trace_from_file():
             assert pytest.approx(np.mean(trace.voltage[0:100])) == 0.0057997689768671985
             # time of max voltage value should be very close to trigger time (0 seconds)
             assert (
-                    pytest.approx(trace.time[np.argmax(trace.y)]) == 4.254989846811945e-09
+                pytest.approx(trace.time[np.argmax(trace.y)]) == 4.254989846811945e-09
             )
 
 
