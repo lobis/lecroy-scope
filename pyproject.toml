@@ -1,9 +1,9 @@
 [build-system]
 requires = [
+    ">=3.8",
     "hatchling",
 ]
 build-backend = "hatchling.build"
-
 
 [project]
 name = "lecroyscope"
@@ -12,10 +12,18 @@ authors = [
 ]
 description = "An unofficial Python package 🐍📦 to interface with Teledyne LeCroy oscilloscopes and read binary trace files (.trc)"
 readme = "README.md"
-requires-python = ">=3.8"
+license = "BSD-3-Clause"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
+]
+keywords = [
+    "lecroy",
+    "scope",
+    "oscilloscope",
+    "vxi11",
+    "binary",
+    "trc",
 ]
 dependencies = [
     "numpy",
