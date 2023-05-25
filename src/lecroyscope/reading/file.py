@@ -11,10 +11,10 @@ from .header import trc_description
 
 
 def read(
-    filename_or_bytes: str | PathLike[str] | bytes, header_only: bool = False
+        filename_or_bytes: str | PathLike[str] | bytes, header_only: bool = False
 ) -> tuple[dict[str, str | int | float], numpy.ndarray, numpy.ndarray]:
     with open(filename_or_bytes, "r+b") if not isinstance(
-        filename_or_bytes, bytes
+            filename_or_bytes, bytes
     ) else BytesIO(filename_or_bytes) as f:
 
         wavedesc_bytes = b"WAVEDESC"
@@ -112,12 +112,9 @@ def read(
                 f.read(int(header["trig_time_array"])), dtype=numpy.float64
             )
 
-            bytes_to_read = int(header["wave_array_count"])
-            if values_type == numpy.int16:
-                bytes_to_read *= 2
-                
+            number_of_bytes_to_read = int(header["wave_array_count"]) * values_type().itemsize
             values = numpy.frombuffer(
-                f.read(bytes_to_read), dtype=values_type
+                f.read(number_of_bytes_to_read), dtype=values_type
             )
         else:
             trigger_times = numpy.array([], dtype=numpy.float64)
