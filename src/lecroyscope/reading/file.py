@@ -16,7 +16,6 @@ def read(
     with open(filename_or_bytes, "r+b") if not isinstance(
         filename_or_bytes, bytes
     ) else BytesIO(filename_or_bytes) as f:
-
         wavedesc_bytes = b"WAVEDESC"
         # find "WAVEDESC" and skip those bytes
         if isinstance(filename_or_bytes, bytes):
@@ -112,8 +111,11 @@ def read(
                 f.read(int(header["trig_time_array"])), dtype=numpy.float64
             )
 
+            number_of_bytes_to_read = (
+                int(header["wave_array_count"]) * values_type().itemsize
+            )
             values = numpy.frombuffer(
-                f.read(int(header["wave_array_count"])), dtype=values_type
+                f.read(number_of_bytes_to_read), dtype=values_type
             )
         else:
             trigger_times = numpy.array([], dtype=numpy.float64)

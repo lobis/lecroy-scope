@@ -77,6 +77,10 @@ class Trace:
             + self.header["horiz_offset"]
         )
 
+        assert (
+            self._voltage.shape[-1] == self._time.shape[-1]
+        ), "Time and voltage arrays must have the same length"
+
     def __len__(self):
         if not self._header.sequence:
             return 1

@@ -90,20 +90,24 @@ def test_trace_channel_from_filename(tmp_path):
 
 def test_read_trace_from_file():
     for filename, shape, length, sequence in zip(
-        [files_path / "pulse.trc", files_path / "pulse_sequence.trc"],
-        [(251,), (20, 251)],
-        [1, 20],
-        [False, True],
+        [
+            files_path / "pulse.trc",
+            files_path / "pulse_sequence.trc",
+            files_path / "issue_1.trc",
+        ],
+        [(502,), (20, 502), (100002,)],
+        [1, 20, 1],
+        [False, True, False],
     ):
         trace = lecroyscope.Trace(filename)
         assert len(trace) == length
         assert trace.header_only is False
         assert trace.sequence == sequence
         assert trace.voltage.shape == shape
-        assert trace.time.shape == (251,)
+        assert trace.time.shape == shape[-1:]
         assert (trace.voltage.shape[-1],) == trace.time.shape
 
-        if not sequence:
+        if filename == files_path / "pulse.trc":
             # check voltage and time scaling is done properly
             # test against signal which consists of ~ 0V baseline + sharp pulse at trigger time
             # first bins should be ~ 0V since we are on the region before pulse
