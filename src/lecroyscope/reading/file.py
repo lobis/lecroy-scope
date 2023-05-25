@@ -112,8 +112,12 @@ def read(
                 f.read(int(header["trig_time_array"])), dtype=numpy.float64
             )
 
+            bytes_to_read = int(header["wave_array_count"])
+            if values_type == numpy.int16:
+                bytes_to_read *= 2
+                
             values = numpy.frombuffer(
-                f.read(int(header["wave_array_count"])), dtype=values_type
+                f.read(bytes_to_read), dtype=values_type
             )
         else:
             trigger_times = numpy.array([], dtype=numpy.float64)
